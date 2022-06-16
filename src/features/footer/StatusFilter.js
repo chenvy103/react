@@ -8,9 +8,9 @@ function StatusFilter ({ value: status, onChange }){
     
         return (
             <li key={value}>
-            <button className={className} onClick={handleClick}>
-                {key}
-            </button>
+                <button className={className} onClick={handleClick}>
+                    {key}
+                </button>
             </li>
         )
     })

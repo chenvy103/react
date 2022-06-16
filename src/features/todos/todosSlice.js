@@ -1,58 +1,105 @@
-const initialState = []
+import { client } from '../../api/client'
 
-function nextTodoId(todos) {
-    const maxId = todos.reduce((maxId, todo) => Math.max(todo.id, maxId), -1)
-    return maxId + 1
+const initialState = {
+    status: 'idle', //notAction
+    entities: {}
 }
 
 function todosReducer (state = initialState, action) {
     switch (action.type) {
         case 'todos/todoAdded': {
-            return [
+            const todo = action.payload
+            return {
                 ...state,
-                {
-                id: nextTodoId(state),
-                text: action.payload,
-                completed: false
-                },
-            ]
+                entities: {
+                    ...state.entities,
+                    [todo.id]: todo
+                }
+            }
         }
 
         case 'todos/todoToggled': {
-            return state.map((todo) => {
-                if (todo.id !== action.payload) return todo
-
-                return {
-                    ...todo,
-                    completed: !todo.completed
+            const todoId = action.payload
+            const todo = state.entities[todoId]
+            return {
+                ...state,
+                entities: {
+                    ...state.entities,
+                    [todoId]:{
+                        ...todo,
+                        completed: !todo.completed
+                    }
                 }
-            })
+            }
         }
 
-        case 'todos/colorSelected': {
+        case 'todos/todoColorSelected': {
             const { color, todoId } = action.payload
-            return state.map((todo) => {
-                if (todo.id !== todoId)return todo
-
-                return {
-                    ...todo,
-                    color,
+            const todo = state.entities[todoId]
+            return {
+                ...state,
+                entities: {
+                    ...state.entities,
+                    [todoId]:{
+                        ...todo,
+                        color
+                    }
                 }
-            })
+            }
         }
 
         case 'todos/todoDeleted': {
-            return state.filter((todo) => todo.id !== action.payload)
+            const newEntities = {...state.entities} //copy
+            delete newEntities[action.payload.todoId] //del
+            return{
+                ...state,
+                entities: newEntities
+            }
         }
 
         case 'todos/allCompleted': {
-            return state.map((todo) => {
-                return { ...todo, completed: true }
+            const newEntities = {...state.entities} 
+            Object.values(newEntities).forEach((todo)=>{
+                newEntities[todo.id] = {
+                    ...todo,
+                    completed: true,
+                }
             })
+            return {
+                ...state,
+                entities: newEntities
+            }
         }
 
         case 'todos/completedCleared': {
-            return state.filter((todo) => !todo.completed)
+            const newEntities = {...state.entities} 
+            Object.values(newEntities).forEach((todo)=>{
+                if(todo.completed) delete newEntities[todo.id]
+            })
+            return {
+                ...state,
+                entities: newEntities
+            }
+        }
+        
+        case 'todos/todosLoading':{
+            return{
+                ...state,
+                status: 'loading'
+            }
+        }
+
+        //update loaded action to reset the state flag to 'idle'
+        case 'todos/todosLoaded':{
+            const newEntities = {}
+            action.payload.forEach((todo) => {
+                newEntities[todo.id] = todo
+            })
+            return {
+                ...state,
+                status: 'idle',
+                entities: newEntities,
+            }
         }
 
         default: return state
@@ -60,3 +107,70 @@ function todosReducer (state = initialState, action) {
 }
 
 export default todosReducer
+
+
+export const todoAdded = (todo) => ({
+    type: 'todos/todoAdded', 
+    payload: todo 
+})
+
+export const todoToggled = (todoId)=> ({
+    type: 'todos/todoToggled', 
+    payload: todoId
+})
+
+export const todoColorSelected = (todoId, color)=> ({
+    type: 'todos/todoColorSelected', 
+    payload: {todoId, color}
+})
+
+export const todoDeleted = (todoId)=> ({
+    type: 'todos/todoDeleted', 
+    payload: {todoId}
+})
+
+export const allTodosCompleted = () => ({ 
+    type: 'todos/allCompleted' 
+})
+
+export const completedTodosCleared = () => ({
+     type: 'todos/completedCleared' 
+})
+
+export const todosLoading = () => ({
+    type: 'todos/todosLoading' 
+})
+
+export const todosLoaded = (todos) => ({
+  type: 'todos/todosLoaded',
+  payload: todos
+})
+
+export function createMarkTodosCompleted(){
+    return {
+        type: 'todos/allCompleted'
+    }
+}
+// Thunk function
+export const fetchTodos = () => async (dispatch) => {
+    dispatch(todosLoading())
+    const response = await client.get('/fakeApi/todos')
+    dispatch(todosLoaded(response.todos))
+}
+
+
+
+export function saveNewTodo(text) {
+    return async function saveNewTodoThunk(dispatch, getState) {
+        const initialTodo = { text }
+        const response = await client.post('/fakeApi/todos', { todo: initialTodo })
+        dispatch(todoAdded(response.todo))
+    }
+}
+
+export function apiMarkCompleted(){
+    return async (dispatch, getState) => {
+        const response = await client.get('/fakeApi/todos');
+        dispatch(allTodosCompleted());
+    }
+}

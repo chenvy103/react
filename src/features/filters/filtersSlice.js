@@ -12,9 +12,10 @@ const initialState = {
 function filtersReducer(state = initialState, action) {
     switch (action.type) {
         case 'filters/statusFilterChanged': {
+            console.log('aa', action.payload)
             return {
-            ...state,
-            status: action.payload
+                ...state,
+                status: action.payload
             }
         }
 
@@ -32,7 +33,7 @@ function filtersReducer(state = initialState, action) {
                     }
                 }
 
-                case 'removed': {
+                case 'uncheck': {
                     return {
                         ...state,
                         colors: state.colors.filter(
@@ -50,3 +51,15 @@ function filtersReducer(state = initialState, action) {
   
 
 export default filtersReducer
+
+export const statusFilterChanged = (status) => ({
+    type: 'filters/statusFilterChanged',
+    payload: status
+})
+  
+export const colorFilterChanged = (color, changeType) => {
+    return {
+      type: 'filters/colorFilterChanged',
+      payload: { color, changeType }
+    }
+}
