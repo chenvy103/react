@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { saveNewTodo } from '../todos/todosSlice'
 
 function Header(){
     const [text, setText] = useState('')
     const [status, setStatus] = useState('idle')
-
+    const inputRef = useRef()
     const dispatch = useDispatch()
 
     const handleKeyDown = async (e) => {
@@ -17,6 +17,7 @@ function Header(){
             //clear out
             setText('')
             setStatus('idle')
+            inputRef.current.focus()
         }
     }
 
@@ -27,6 +28,7 @@ function Header(){
     return (
         <header className="header">
             <input
+                ref={inputRef}
                 className="new-todo"
                 placeholder={placeholder}
                 value={text}

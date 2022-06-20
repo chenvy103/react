@@ -18,18 +18,20 @@ export const selectTodoIds = createSelector(
 )
 
 export const selectFilteredTodos = createSelector(
-    selectTodos,
-    (state) => state.filters,
+    selectTodos, //all todos
+    (state) => state.filters, //all filter values
+    // Output 
     (todos, filters) => {
-       
-        const {status, colors} = filters;
-        console.log('status', status)
-        const completedStatus = status === StatusFilters.Completed;
-        return todos.filter((todo)=>{
-            console.log(todo);
-            const statusMatches = (status == StatusFilters.All) || (todo.Completed == completedStatus)
-            console.log("Matched", statusMatches, completedStatus);
-            const colorMatches = colors.length === 0 || colors.inclues(todo.color)
+        const { status, colors } = filters
+        //console.log(colors)
+        
+    
+        const completedStatus = status === StatusFilters.Completed
+        return todos.filter((todo) => {
+            const statusMatches = (status === StatusFilters.All) || todo.completed !== completedStatus
+            const colorMatches = colors.length === 0 || colors.includes(todo.color)
+            //console.log(statusMatches, colorMatches)
+            //console.log('todoColor',todo.color)
             return statusMatches && colorMatches
         })
     }

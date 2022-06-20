@@ -4,10 +4,9 @@ import RemainingTodos from './RemainingTodos'
 import StatusFilter from './StatusFilter'
 import ColorFilters from './ColorFilters'
 
-import {colorFilterChanged, statusFilterChanged} from '../filters/filtersSlice'
-import {completedTodosCleared,createMarkTodosCompleted, allTodosCompleted, apiMarkCompleted} from '../todos/todosSlice'
+import {colorFilterChanged, getTodos, statusFilterChanged} from '../filters/filtersSlice'
+import {apiClearCompleted, apiMarkCompleted} from '../todos/todosSlice'
 import {selectTodos} from '../todos/selectsSlice'
-import { bindActionCreators } from 'redux'
 
 function Footer() {
     const dispatch = useDispatch()
@@ -19,12 +18,37 @@ function Footer() {
 
     const { status, colors } = useSelector((state) => state.filters)
 
-    const onColorChange = (color, changeType) =>
-        dispatch(colorFilterChanged(color, changeType))
+    //const filterValues = {status, colors}
+    //console.log('aa',filterValues)
+
+    const uncompletedIds = useSelector((todos)=>{
+        return selectTodos(todos).filter((todo) => !todo.completed).map(todo => todo.id);
+    })
+
+    const clearCompletedIds = useSelector((todos)=>{
+        return selectTodos(todos).filter((todo)=> todo.completed).map(todo => todo.id)
+    })
+
+    //const filterColor = selectFilteredTodos
+
+    const onColorChange = (colors) =>{
+        //dispatch(colorFilterChanged(color,changeType))
+        dispatch(getTodos({status, colors}))
+    }
+
+        // Use selecter to ids get uncompleted todos 
+        // Dispath to thunk API
 
     const onStatusChange = (status) =>{
-        dispatch(statusFilterChanged(status))
-        console.log(statusFilterChanged({status}))
+        dispatch(getTodos({status, colors}))
+        //dispatch(statusFilterChanged(status))
+    }
+    const handleCompletedTodos =()=>{
+        dispatch(apiMarkCompleted(uncompletedIds))
+    }
+
+    const handleClearCompletedTodos =() =>{
+        dispatch(apiClearCompleted(clearCompletedIds))
     }
     
     return (
@@ -33,13 +57,13 @@ function Footer() {
                 <h5>Actions</h5>
                 <button 
                     className="button" 
-                    onClick={()=>{dispatch(allTodosCompleted())}}
+                    onClick={handleCompletedTodos}
                 >
                     Mark All Completed
                 </button>
                 <button 
                     className="button"
-                    onClick={()=>{dispatch(completedTodosCleared())}}
+                    onClick={handleClearCompletedTodos}
                 >
                     Clear Completed
                 </button>

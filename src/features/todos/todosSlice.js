@@ -2,7 +2,7 @@ import { client } from '../../api/client'
 
 const initialState = {
     status: 'idle', //notAction
-    entities: {}
+    entities: {},
 }
 
 function todosReducer (state = initialState, action) {
@@ -57,12 +57,15 @@ function todosReducer (state = initialState, action) {
             }
         }
 
-        case 'todos/allCompleted': {
+        case 'todos/markCompleted': {
+            const ids = action.payload;
+            // kiem tra
             const newEntities = {...state.entities} 
             Object.values(newEntities).forEach((todo)=>{
+                const completed = ids.includes(todo.id) ? true : todo.completed;
                 newEntities[todo.id] = {
                     ...todo,
-                    completed: true,
+                    completed: completed,
                 }
             })
             return {
@@ -71,10 +74,14 @@ function todosReducer (state = initialState, action) {
             }
         }
 
-        case 'todos/completedCleared': {
+        case 'todos/clearCompleted': {
+            const ids = action.payload;
+            // kiem tra
             const newEntities = {...state.entities} 
             Object.values(newEntities).forEach((todo)=>{
-                if(todo.completed) delete newEntities[todo.id]
+                if (todo.completed) {
+                    delete newEntities[todo.id]
+                }
             })
             return {
                 ...state,
@@ -129,12 +136,14 @@ export const todoDeleted = (todoId)=> ({
     payload: {todoId}
 })
 
-export const allTodosCompleted = () => ({ 
-    type: 'todos/allCompleted' 
+export const markTodosCompleted = (ids = []) => ({ 
+    type: 'todos/markCompleted',
+    payload: ids
 })
 
-export const completedTodosCleared = () => ({
-     type: 'todos/completedCleared' 
+export const clearTodosCompleted = (ids = []) => ({
+    type: 'todos/clearCompleted',
+    payload: ids
 })
 
 export const todosLoading = () => ({
@@ -146,31 +155,110 @@ export const todosLoaded = (todos) => ({
   payload: todos
 })
 
+//func
 export function createMarkTodosCompleted(){
     return {
-        type: 'todos/allCompleted'
+        type: 'todos/allCompleted',
     }
 }
 // Thunk function
-export const fetchTodos = () => async (dispatch) => {
+export const fetchTodos = () => async (dispatch, getState) => {
+    //
     dispatch(todosLoading())
-    const response = await client.get('/fakeApi/todos')
-    dispatch(todosLoaded(response.todos))
+    const res = await fetch(`http://127.0.0.1/api/todos?page=1`);
+    if(res.status == 200){
+        const data = await res.json();
+        console.log("Data", data);
+        dispatch(todosLoaded(data.data))
+    }
+    else{
+        console.log("Error", res.message);
+    }
+   
 }
-
 
 
 export function saveNewTodo(text) {
     return async function saveNewTodoThunk(dispatch, getState) {
-        const initialTodo = { text }
-        const response = await client.post('/fakeApi/todos', { todo: initialTodo })
-        dispatch(todoAdded(response.todo))
+        const newTodo = { text: text }
+        const res = await fetch(`http://127.0.0.1/api/todos`,{
+            method:"POST",
+            body: JSON.stringify(newTodo),
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        });
+        if(res.status == 201) {
+            const data = await res.json();
+            const todo ={
+                id: data.id,
+                text: data.text,
+                color: "Green"
+            }
+            console.log('added', data)
+            dispatch(todoAdded(todo))
+        }
+        else{
+            console.log("Error", res.message);
+        }
+        //const response = await client.post('/fakeApi/todos', { todo: initialTodo })
+        
     }
 }
 
-export function apiMarkCompleted(){
+export function apiMarkCompleted(ids = []){
     return async (dispatch, getState) => {
-        const response = await client.get('/fakeApi/todos');
-        dispatch(allTodosCompleted());
+        console.log(`ids=[${ids.toString()}]`)
+        // send request to server
+        // get response 
+        // if success then update the store by dispach to action ids []
+        // then
+        
+        const res = await fetch('http://127.0.0.1/api/todos/mark-completed?'+`ids=[${ids.toString()}]`)
+        console.log(res)
+        if(res.status == 200){
+            dispatch(markTodosCompleted(ids));
+        }
+        else{
+            console.log("Error", res.message);
+        }
+        //dispatch(allTodosCompleted(response));
+    }
+}
+
+export function apiClearCompleted(ids =[]){
+    return async (dispatch, getState) => {
+        console.log(`ids=[${ids.toString()}]`)
+        const res = await fetch('http://127.0.0.1/api/todos/clear-completed?'+`ids=[${ids.toString()}]`)
+
+        if(res.status == 200){
+            dispatch(clearTodosCompleted(ids));
+        }
+        else{
+            console.log("Error", res.message);
+        }
+    }
+}
+
+export function editTodo(todo){
+    return async (dispatch, getState) => {
+        console.log(todo.id)
+        const res = await fetch(`http://127.0.0.1/api/todos/`+ `id=${todo.id}`,{
+            method:"PUT",
+            body: JSON.stringify({todo}),
+            headers: {
+                'Content-Type': 'application/json'
+                //'Accept': 'application/json'
+            }
+        });
+        if(res.todos != null){
+            const data = await res.json();
+            console.log("edit",data);
+            dispatch(todoToggled(todo.id))
+        }
+        else{
+            console.log("Error", res);
+        }
     }
 }

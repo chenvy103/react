@@ -1,11 +1,14 @@
 import { availableColors, capitalize } from '../filters/colors'
+import {colorFilterChanged} from '../filters/filtersSlice'
+import { useDispatch } from 'react-redux'
 
 function ColorFilters ({ value: colors, onChange }){
+  const dispatch = useDispatch()
   const renderedColors = availableColors.map((color) => {
     const checked = colors.includes(color)
     const handleChange = () => {
       const changeType = checked ? 'uncheck' : 'checked'
-      onChange(color, changeType)
+      dispatch(colorFilterChanged(color,changeType))
     }
 
     return (

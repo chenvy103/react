@@ -1,3 +1,6 @@
+import { client } from '../../api/client'
+import { todosLoaded, todosLoading } from '../todos/todosSlice'
+
 export const StatusFilters = {
     All: 'all',
     Active: 'active',
@@ -12,7 +15,6 @@ const initialState = {
 function filtersReducer(state = initialState, action) {
     switch (action.type) {
         case 'filters/statusFilterChanged': {
-            console.log('aa', action.payload)
             return {
                 ...state,
                 status: action.payload
@@ -44,6 +46,12 @@ function filtersReducer(state = initialState, action) {
                 default: return state
             }
         }
+        case 'filters/colorsFiltered':{
+            return {
+                ...state,
+                colors: action.payload
+            }
+        }
 
         default: return state
     }
@@ -61,5 +69,29 @@ export const colorFilterChanged = (color, changeType) => {
     return {
       type: 'filters/colorFilterChanged',
       payload: { color, changeType }
+    }
+}
+export const colorsFiltered = (colors) => {
+    return {
+      type: 'filters/colorsFiltered',
+      payload: colors
+    }
+}
+
+
+export function getTodos({status, colors}){
+    return async (dispatch, getState) => {
+        //const response = await client.get('/fakeApi/todos');
+        const res = await fetch('http://127.0.0.1/api/todos?'+`&status=${status}`+`&colors=${colors}`)
+        if (res.status == 200){
+            dispatch(todosLoading())
+            const data = await res.json();
+            dispatch(statusFilterChanged(status))
+            dispatch(colorsFiltered(colors))
+            dispatch(todosLoaded(data.data))
+        }
+        else{
+            console.log("Error", res.message);
+        }
     }
 }

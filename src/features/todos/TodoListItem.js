@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { availableColors, capitalize } from '../filters/colors'
 
-import {todoColorSelected, todoDeleted, todoToggled} from './todosSlice'
+import {todoColorSelected, todoDeleted, todoToggled, editTodo} from './todosSlice'
 import {selectTodoById} from './selectsSlice'
 
 
@@ -10,17 +10,19 @@ function TodoListItem ({ id }) {
   // `selectTodoById` with state & ID value
     const todo = useSelector((state) => selectTodoById(state, id))
     const { text, completed, color } = todo
-
     const dispatch = useDispatch()
 
 
     const handleColorChanged = (e) => {
         const color = e.target.value
         dispatch(todoColorSelected(todo.id, color))
+        dispatch(editTodo(todo))
     }
+    
+    console.log('todo',todo)
 
     const colorOptions = availableColors.map((c) => (
-        <option key={c} value={c}>
+        <option key={c} value={capitalize(c)}>
         {capitalize(c)}
         </option>
     ))
@@ -33,7 +35,7 @@ function TodoListItem ({ id }) {
                         className="toggle"
                         type="checkbox"
                         checked={completed}
-                        onChange={() => {dispatch(todoToggled(todo.id))}}
+                        onChange={() => {dispatch(editTodo(todo))}}
                     />
                     <div className="todo-text">{text}</div>
                 </div>
@@ -49,8 +51,7 @@ function TodoListItem ({ id }) {
                     </select>
                     <button 
                         className="destroy" 
-                        onClick={() => {console.log(todoDeleted(todo.id))
-                            dispatch(todoDeleted(todo.id))}}       
+                        onClick={() => {dispatch(todoDeleted(todo.id))}}       
                     >
                         &times;
                     </button>
