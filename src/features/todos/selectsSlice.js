@@ -25,13 +25,11 @@ export const selectFilteredTodos = createSelector(
         const { status, colors } = filters
         //console.log(colors)
         
-    
         const completedStatus = status === StatusFilters.Completed
         return todos.filter((todo) => {
-            const statusMatches = (status === StatusFilters.All) || todo.completed !== completedStatus
+            const statusMatches = (status === StatusFilters.All) || todo.completed === completedStatus
             const colorMatches = colors.length === 0 || colors.includes(todo.color)
             //console.log(statusMatches, colorMatches)
-            //console.log('todoColor',todo.color)
             return statusMatches && colorMatches
         })
     }

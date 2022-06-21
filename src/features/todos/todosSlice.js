@@ -1,4 +1,5 @@
 import { client } from '../../api/client'
+import { availableColors } from '../filters/colors'
 
 const initialState = {
     status: 'idle', //notAction
@@ -161,6 +162,16 @@ export function createMarkTodosCompleted(){
         type: 'todos/allCompleted',
     }
 }
+function convertTodo(todo){
+    return {
+        "id" : todo.id,
+        "text": todo.text,
+        "color" : todo.color?.name,
+        "completed": todo.completed
+    }
+}
+
+
 // Thunk function
 export const fetchTodos = () => async (dispatch, getState) => {
     //
@@ -168,8 +179,8 @@ export const fetchTodos = () => async (dispatch, getState) => {
     const res = await fetch(`http://127.0.0.1/api/todos?page=1`);
     if(res.status == 200){
         const data = await res.json();
-        console.log("Data", data);
-        dispatch(todosLoaded(data.data))
+        const convertedTodo = data === null ? null : data.data.map((todo)=>convertTodo(todo))  ;
+        dispatch(todosLoaded(convertedTodo))
     }
     else{
         console.log("Error", res.message);
@@ -189,12 +200,13 @@ export function saveNewTodo(text) {
                 'Accept': 'application/json'
             }
         });
-        if(res.status == 201) {
+        if(res.status == 200) {
             const data = await res.json();
             const todo ={
-                id: data.id,
-                text: data.text,
-                color: "Green"
+                id: data.data.id,
+                text: data.data.text,
+                completed: false,
+                color: null
             }
             console.log('added', data)
             dispatch(todoAdded(todo))
@@ -243,22 +255,51 @@ export function apiClearCompleted(ids =[]){
 
 export function editTodo(todo){
     return async (dispatch, getState) => {
-        console.log(todo.id)
-        const res = await fetch(`http://127.0.0.1/api/todos/`+ `id=${todo.id}`,{
-            method:"PUT",
-            body: JSON.stringify({todo}),
-            headers: {
-                'Content-Type': 'application/json'
-                //'Accept': 'application/json'
-            }
-        });
-        if(res.todos != null){
+
+        try {
+            
+            const res = await fetch(`http://127.0.0.1/api/todos/`+ `${todo.id}`,{
+                method:"PUT",
+                body: JSON.stringify(todo),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            console.log("edit",todo);
+        } catch (error) {
+            console.log(error);
+        }
+    /*
+        console.log(res)
+        if(res.status == 200){
             const data = await res.json();
             console.log("edit",data);
-            dispatch(todoToggled(todo.id))
+            //dispatch(todoToggled(todo.id))
         }
         else{
-            console.log("Error", res);
+            console.log("Error", res.message);
+        }
+        */
+    }
+}
+
+export function deleteTodo(id){
+    return async (dispatch, getState) => {
+        try {
+            
+            const res = await fetch(`http://127.0.0.1/api/todos/`+ `${id}`,{
+                method:"DELETE",
+                body: JSON.stringify({id:id}),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            console.log("del",id);
+            dispatch(todoDeleted(id))
+        } catch (error) {
+            console.log(error);
         }
     }
 }

@@ -18,8 +18,6 @@ function Footer() {
 
     const { status, colors } = useSelector((state) => state.filters)
 
-    //const filterValues = {status, colors}
-    //console.log('aa',filterValues)
 
     const uncompletedIds = useSelector((todos)=>{
         return selectTodos(todos).filter((todo) => !todo.completed).map(todo => todo.id);
@@ -29,9 +27,8 @@ function Footer() {
         return selectTodos(todos).filter((todo)=> todo.completed).map(todo => todo.id)
     })
 
-    //const filterColor = selectFilteredTodos
-
     const onColorChange = (colors) =>{
+        console.log('colorsFil',colors)
         //dispatch(colorFilterChanged(color,changeType))
         dispatch(getTodos({status, colors}))
     }
@@ -40,6 +37,7 @@ function Footer() {
         // Dispath to thunk API
 
     const onStatusChange = (status) =>{
+        console.log('colorFil',colors)
         dispatch(getTodos({status, colors}))
         //dispatch(statusFilterChanged(status))
     }

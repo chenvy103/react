@@ -28,7 +28,7 @@ function filtersReducer(state = initialState, action) {
             switch (changeType) {
                 case 'checked': {
                     if (colors.includes(color)) return state // color co san
-        
+                    
                     return {
                         ...state,
                         colors: state.colors.concat(color)
@@ -82,7 +82,9 @@ export const colorsFiltered = (colors) => {
 export function getTodos({status, colors}){
     return async (dispatch, getState) => {
         //const response = await client.get('/fakeApi/todos');
+        console.log('colorFil',colors)
         const res = await fetch('http://127.0.0.1/api/todos?'+`&status=${status}`+`&colors=${colors}`)
+        
         if (res.status == 200){
             dispatch(todosLoading())
             const data = await res.json();
