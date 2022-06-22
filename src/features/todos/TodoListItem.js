@@ -14,14 +14,17 @@ function TodoListItem ({ id }) {
 
     
     const handleToggleChanged = ()=>{
+        dispatch(editTodo({...todo, completed: !todo.completed}))
         dispatch(todoToggled(todo.id))
-        dispatch(editTodo(todo))
+        
     }
 
     const handleColorChanged = (e) => {
         const color = e.target.value
+        console.log('a1',todo)
         dispatch(todoColorSelected(todo.id, color))
-        dispatch(editTodo(todo))
+        console.log('a',todo)
+        dispatch(editTodo({...todo, color:color}))
     }
 
     const colorOptions = availableColors.map((c) => (

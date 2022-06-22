@@ -1,5 +1,4 @@
-import { client } from '../../api/client'
-import { availableColors } from '../filters/colors'
+import { convertBack, convertTo } from "./todoAdapter"
 
 const initialState = {
     status: 'idle', //notAction
@@ -162,14 +161,6 @@ export function createMarkTodosCompleted(){
         type: 'todos/allCompleted',
     }
 }
-function convertTodo(todo){
-    return {
-        "id" : todo.id,
-        "text": todo.text,
-        "color" : todo.color?.name,
-        "completed": todo.completed
-    }
-}
 
 
 // Thunk function
@@ -179,7 +170,7 @@ export const fetchTodos = () => async (dispatch, getState) => {
     const res = await fetch(`http://127.0.0.1/api/todos?page=1`);
     if(res.status == 200){
         const data = await res.json();
-        const convertedTodo = data === null ? null : data.data.map((todo)=>convertTodo(todo))  ;
+        const convertedTodo = data === null ? null : data.data.map((todo)=>convertTo(todo))  ;
         dispatch(todosLoaded(convertedTodo))
     }
     else{
@@ -255,18 +246,21 @@ export function apiClearCompleted(ids =[]){
 
 export function editTodo(todo){
     return async (dispatch, getState) => {
-
+        console.log('check', todo)
+        const editTodo = convertBack(todo);
+        console.log(editTodo);
         try {
-            
             const res = await fetch(`http://127.0.0.1/api/todos/`+ `${todo.id}`,{
                 method:"PUT",
-                body: JSON.stringify(todo),
+                body: JSON.stringify(editTodo),
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 }
             });
             console.log("edit",todo);
+            const data = await res.json();
+            console.log(data)
         } catch (error) {
             console.log(error);
         }
