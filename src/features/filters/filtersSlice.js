@@ -1,5 +1,6 @@
 import { client } from '../../api/client'
 import { todosLoaded, todosLoading } from '../todos/todosSlice'
+import { convertTo } from "../todos/todoAdapter"
 
 export const StatusFilters = {
     All: 'all',
@@ -83,14 +84,16 @@ export function getTodos({status, colors}){
     return async (dispatch, getState) => {
         //const response = await client.get('/fakeApi/todos');
         console.log('colorFil',colors)
-        const res = await fetch('http://127.0.0.1/api/todos?'+`&status=${status}`+`&colors=${colors}`)
+        const res = await fetch('http://127.0.0.1/api/todos?'+`&status=${status}`+`&colors=${colors.toString()}`)
         
         if (res.status == 200){
             dispatch(todosLoading())
             const data = await res.json();
+            console.log(data)
             dispatch(statusFilterChanged(status))
             dispatch(colorsFiltered(colors))
-            dispatch(todosLoaded(data.data))
+            const convertedTodo = data === null ? null : data.data.map((todo)=>convertTo(todo))  ;
+            dispatch(todosLoaded(convertedTodo))
         }
         else{
             console.log("Error", res.message);

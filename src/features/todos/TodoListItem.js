@@ -6,6 +6,12 @@ import {todoColorSelected, todoDeleted, todoToggled, editTodo, deleteTodo} from 
 import {selectTodoById} from './selectsSlice'
 
 
+export const colorOptions = availableColors.map((c) => (
+    <option key={c} value={c}>
+    {c}
+    </option>
+))
+
 function TodoListItem ({ id }) {
   // `selectTodoById` with state & ID value
     const todo = useSelector((state) => selectTodoById(state, id))
@@ -21,17 +27,11 @@ function TodoListItem ({ id }) {
 
     const handleColorChanged = (e) => {
         const color = e.target.value
-        console.log('a1',todo)
         dispatch(todoColorSelected(todo.id, color))
-        console.log('a',todo)
         dispatch(editTodo({...todo, color:color}))
     }
 
-    const colorOptions = availableColors.map((c) => (
-        <option key={c} value={c}>
-        {c}
-        </option>
-    ))
+    
 
     return (
         <li>

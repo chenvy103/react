@@ -180,9 +180,12 @@ export const fetchTodos = () => async (dispatch, getState) => {
 }
 
 
-export function saveNewTodo(text) {
+export function saveNewTodo(todo) {
     return async function saveNewTodoThunk(dispatch, getState) {
-        const newTodo = { text: text }
+        const newTodo = {
+            text: todo.text,
+            color: todo.color 
+        }
         const res = await fetch(`http://127.0.0.1/api/todos`,{
             method:"POST",
             body: JSON.stringify(newTodo),
@@ -192,18 +195,26 @@ export function saveNewTodo(text) {
             }
         });
         if(res.status == 200) {
+            console.log(newTodo)
             const data = await res.json();
             const todo ={
                 id: data.data.id,
                 text: data.data.text,
                 completed: false,
-                color: null
+                color: data.data.color
             }
             console.log('added', data)
             dispatch(todoAdded(todo))
+            
+            //update color by PUTmethod
+            if(newTodo.color!=null){
+                dispatch(todoColorSelected(todo.id, newTodo.color))
+                dispatch(editTodo({...todo, color:newTodo.color}))
+            }
         }
         else{
             console.log("Error", res.message);
+            alert("invalid input")
         }
         //const response = await client.post('/fakeApi/todos', { todo: initialTodo })
         
@@ -246,7 +257,6 @@ export function apiClearCompleted(ids =[]){
 
 export function editTodo(todo){
     return async (dispatch, getState) => {
-        console.log('check', todo)
         const editTodo = convertBack(todo);
         console.log(editTodo);
         try {
@@ -258,7 +268,6 @@ export function editTodo(todo){
                     'Accept': 'application/json'
                 }
             });
-            console.log("edit",todo);
             const data = await res.json();
             console.log(data)
         } catch (error) {

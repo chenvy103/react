@@ -28,7 +28,7 @@ function Footer() {
     })
 
     const onColorChange = (colors) =>{
-        console.log('colorsFil',colors)
+        console.log('colors',colors)
         //dispatch(colorFilterChanged(color,changeType))
         dispatch(getTodos({status, colors}))
     }
@@ -37,7 +37,6 @@ function Footer() {
         // Dispath to thunk API
 
     const onStatusChange = (status) =>{
-        console.log('colorFil',colors)
         dispatch(getTodos({status, colors}))
         //dispatch(statusFilterChanged(status))
     }
