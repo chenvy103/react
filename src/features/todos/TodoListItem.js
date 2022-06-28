@@ -1,9 +1,10 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { availableColors, capitalize } from '../filters/colors'
+import { availableColors} from '../filters/colors'
 
-import {todoColorSelected, todoDeleted, todoToggled, editTodo, deleteTodo} from './todosSlice'
+import {todoColorSelected, todoToggled, editTodo, deleteTodo} from './todosReducer'
 import {selectTodoById} from './selectsSlice'
+import { setTodoToggle } from './todosSlice'
 
 
 export const colorOptions = availableColors.map((c) => (
@@ -21,8 +22,7 @@ function TodoListItem ({ id }) {
     
     const handleToggleChanged = ()=>{
         dispatch(editTodo({...todo, completed: !todo.completed}))
-        dispatch(todoToggled(todo.id))
-        
+        dispatch(setTodoToggle(todo.id))
     }
 
     const handleColorChanged = (e) => {

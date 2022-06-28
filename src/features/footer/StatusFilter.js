@@ -1,4 +1,4 @@
-import { StatusFilters } from '../filters/filtersSlice'
+import { StatusFilters } from '../filters/filtersReducer'
 
 function StatusFilter ({ value: status, onChange }){
     const renderedFilters = Object.keys(StatusFilters).map((key) => {

@@ -1,14 +1,43 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { saveNewTodo } from '../todos/todosSlice'
-import {colorOptions} from '../todos/TodoListItem'
+import { saveNewTodo } from '../todos/todosReducer'
+
+import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+const schema = yup.object().shape({
+    text: yup.string().required(),
+    color: yup.string().required()
+});
 
 function Header(){
-    const [text, setText] = useState('')
     const [status, setStatus] = useState('idle')
-    const inputRef = useRef()
     const dispatch = useDispatch()
 
+
+    const { register, handleSubmit, formState: { errors }, reset, setFocus } = useForm({
+        resolver: yupResolver(schema),
+    })
+
+    React.useEffect(() => {
+        setFocus("text")
+    }, [setFocus])
+
+    const onSubmitHandler = (data) => {
+        console.log({ data });
+        const aNewTodo= {
+            text: data.text.trim(),
+            color: data.color
+        }
+        setStatus('loading')
+        dispatch(saveNewTodo(aNewTodo))
+        reset();
+        setStatus('idle')
+        setFocus("text")
+    }
+
+    
     const options = [
         {value: '', text: ''},
         {value: 'Green', text: 'Green'},
@@ -18,25 +47,6 @@ function Header(){
         {value: 'Red', text: 'Red'},
     ];
     
-    const [color, setColor] = useState(options[0].value)
-
-    const handleKeyDown = async (e) => {
-        //pressed Enter key
-        const aNewTodo= {
-            text: text.trim(),
-            color: color
-        }
-        if (e.which === 13 && aNewTodo) {
-            setStatus('loading')
-            await dispatch(saveNewTodo(aNewTodo))
-            //clear out
-            setText('')
-            setStatus('idle')
-            setColor(options[0].value)
-            inputRef.current.focus()
-        }
-
-    }
 
     let isLoading = status === 'loading'
     let placeholder = isLoading ? '' : 'What needs to be done?'
@@ -44,31 +54,47 @@ function Header(){
 
     return (
         <header className="header">
-            <input
-                ref={inputRef}
-                className="new-todo"
-                placeholder={placeholder}
-                value={text}
-                onChange={e => setText(e.target.value)}
-                onKeyDown={handleKeyDown}
-                disabled={isLoading}
-            />
-            <div className="segment buttons">
-                <select
-                    className="colorPicker"
-                    value={color}
-                    style={{ color }}
-                    onChange={e => setColor(e.target.value)}
-                >
-                    {options.map(option => (
-                        <option key={option.value} value={option.value}>
-                            {option.text}
-                        </option>
-                    ))}
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
 
-                </select>
-            </div>
+                <div style={{float:'left'}}>
+                    <input {...register("text")} 
+                        placeholder={placeholder} 
+                        type="text" 
+                        className="new-todo"
+                        disabled={isLoading}
+                    />
+                    <p className='error' style={{marginLeft:16}}>{errors.text?.message}</p>
+                </div>
+
+                <div style={{float:'left'}}>
+                    <select
+                        {...register("color")}
+                        className="colorPicker"
+                        style={{marginTop:20}}
+                    >
+                        {options.map(option => (
+                            <option key={option.value} value={option.value}>
+                                {option.text}
+                            </option>
+                        ))}
+                    </select>
+                    <p className='error'>{errors.color?.message}</p>
+                </div>
+
+                <div style={{float:'right'}}>
+                    <button 
+                        className="button"
+                        type="submit"
+                        style={{margin:10}}
+                    >
+                        Add
+                    </button>
+                </div>
+                
+            </form> 
+            
             {loader}
+
         </header>
     )
 }

@@ -4,8 +4,8 @@ import RemainingTodos from './RemainingTodos'
 import StatusFilter from './StatusFilter'
 import ColorFilters from './ColorFilters'
 
-import {colorFilterChanged, getTodos, statusFilterChanged} from '../filters/filtersSlice'
-import {apiClearCompleted, apiMarkCompleted} from '../todos/todosSlice'
+import {getTodos} from '../filters/filtersReducer'
+import {apiClearCompleted, apiMarkCompleted} from '../todos/todosReducer'
 import {selectTodos} from '../todos/selectsSlice'
 
 function Footer() {

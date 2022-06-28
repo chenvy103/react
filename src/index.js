@@ -5,7 +5,7 @@ import './index.css'
 import App from './App'
 import store from './store'
 
-import { fetchTodos } from './features/todos/todosSlice'
+import { fetchTodos } from './features/todos/todosReducer'
 
 store.dispatch(fetchTodos())
 

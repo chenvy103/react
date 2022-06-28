@@ -1,5 +1,5 @@
 import { createSelector } from "reselect"
-import { StatusFilters } from "../filters/filtersSlice"
+import { StatusFilters } from "../filters/filtersReducer"
 
 const selectTodoEntities = (state) => state.todos.entities
 

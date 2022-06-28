@@ -1,5 +1,5 @@
 import { availableColors, capitalize } from '../filters/colors'
-import {colorFilterChanged} from '../filters/filtersSlice'
+import {colorFilterChanged} from '../filters/filtersReducer'
 import { useDispatch } from 'react-redux'
 
 function ColorFilters ({ value: colors, onChange }){

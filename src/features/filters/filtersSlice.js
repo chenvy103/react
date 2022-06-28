@@ -1,102 +1,50 @@
-import { client } from '../../api/client'
-import { todosLoaded, todosLoading } from '../todos/todosSlice'
-import { convertTo } from "../todos/todoAdapter"
+import { createSlice } from '@reduxjs/toolkit'
 
 export const StatusFilters = {
     All: 'all',
     Active: 'active',
     Completed: 'completed'
 }
-  
+
 const initialState = {
     status: StatusFilters.All,
     colors: []
 }
-  
-function filtersReducer(state = initialState, action) {
-    switch (action.type) {
-        case 'filters/statusFilterChanged': {
-            return {
-                ...state,
-                status: action.payload
-            }
-        }
 
-        case 'filters/colorFilterChanged': {
-            let { color, changeType } = action.payload
-            const { colors } = state
-    
-            switch (changeType) {
-                case 'checked': {
-                    if (colors.includes(color)) return state // color co san
-                    
-                    return {
-                        ...state,
-                        colors: state.colors.concat(color)
+const filtersSlice = createSlice({
+    name: 'filters',
+    initialState,
+    reducers:{
+        filterByStatus(state, action){
+            state.status = action.payload
+        },
+
+        filteredColors:{
+            reducer: (state, action)=>{
+                const { color, changeType } = action.payload
+                switch(changeType){
+                    case 'checked': return state.colors.concat(color);
+                    case 'uncheck': return state.colors.filter((colors) => colors != color)
+                }
+            },
+            prepare: (color, changeType)=>{
+                return{
+                    payload:{
+                        color: color,
+                        changeType: changeType
                     }
                 }
-
-                case 'uncheck': {
-                    return {
-                        ...state,
-                        colors: state.colors.filter(
-                            (existColor) => existColor !== color
-                        )
-                    }
-                }
-                default: return state
             }
-        }
-        case 'filters/colorsFiltered':{
-            return {
-                ...state,
-                colors: action.payload
-            }
-        }
+        },
 
-        default: return state
+        filterByColors(state, action){
+            state.colors = action.payload
+        }
     }
-}
-  
-
-export default filtersReducer
-
-export const statusFilterChanged = (status) => ({
-    type: 'filters/statusFilterChanged',
-    payload: status
 })
-  
-export const colorFilterChanged = (color, changeType) => {
-    return {
-      type: 'filters/colorFilterChanged',
-      payload: { color, changeType }
-    }
-}
-export const colorsFiltered = (colors) => {
-    return {
-      type: 'filters/colorsFiltered',
-      payload: colors
-    }
-}
 
+const { actions, reducer } = filtersSlice
 
-export function getTodos({status, colors}){
-    return async (dispatch, getState) => {
-        //const response = await client.get('/fakeApi/todos');
-        console.log('colorFil',colors)
-        const res = await fetch('http://127.0.0.1/api/todos?'+`&status=${status}`+`&colors=${colors.toString()}`)
-        
-        if (res.status == 200){
-            dispatch(todosLoading())
-            const data = await res.json();
-            console.log(data)
-            dispatch(statusFilterChanged(status))
-            dispatch(colorsFiltered(colors))
-            const convertedTodo = data === null ? null : data.data.map((todo)=>convertTo(todo))  ;
-            dispatch(todosLoaded(convertedTodo))
-        }
-        else{
-            console.log("Error", res.message);
-        }
-    }
-}
+export const { filterByStatus, filteredColors, filterByColors } = actions
+
+export default reducer
