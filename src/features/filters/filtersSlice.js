@@ -22,9 +22,19 @@ const filtersSlice = createSlice({
         filteredColors:{
             reducer: (state, action)=>{
                 const { color, changeType } = action.payload
+                const {colors} = state
                 switch(changeType){
-                    case 'checked': return state.colors.concat(color);
-                    case 'uncheck': return state.colors.filter((colors) => colors != color)
+                    case 'checked': 
+                        if (!colors.includes(color)) {
+                            state.colors.push(color)
+                        }
+                        break;
+                    case 'uncheck':
+                        state.colors = state.colors.filter(
+                            existColor => existColor !== color
+                        )
+                        break;
+                    default: return state
                 }
             },
             prepare: (color, changeType)=>{

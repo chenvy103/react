@@ -1,4 +1,4 @@
-import { addTodo, setTodoColor, deleteTodo, setTodoToggle, markAllCompleted, clearCompleted, todoLoading, todoLoaded } from "./todosSlice";
+import { addATodo, setTodoColor, deleteATodo, setTodoToggle, markCompleted, clearCompleted, todosLoading, todosLoaded } from "./todosSlice";
 import reducer from "./todosSlice";
 
 describe("Test todo reducer", ()=>{
@@ -7,7 +7,7 @@ describe("Test todo reducer", ()=>{
             reducer({
                 status: "Idle",
                 entities: {}
-            }, addTodo({
+            }, addATodo({
                 id:1,
                 text: 'Test',
                 completed: false,
@@ -54,7 +54,7 @@ describe("Test todo reducer", ()=>{
                         color: 'Red'
                     }
                 }
-            }, markAllCompleted([1]))
+            }, markCompleted([1]))
         ).toEqual({
             status: "Idle",
             entities: {
@@ -139,20 +139,33 @@ describe("Test todo reducer", ()=>{
                         text: "Test",
                         completed: false,
                         color: 'blue'
+                    },
+                    2: {
+                        id : 2,
+                        text: "TestA",
+                        completed: true,
+                        color: 'Red'
                     }
                 }
-            }, deleteTodo(1))
+            }, deleteATodo(1))
         ).toEqual({
             status: "Idle",
-            entities: {}
+            entities: {
+                2: {
+                    id : 2,
+                    text: "TestA",
+                    completed: true,
+                    color: 'Red'
+                }
+            }
         })
     });
-    it("Test todoLoaded", ()=>{
+    it("Test todosLoaded", ()=>{
         expect(
             reducer({
                 status: "loading",
                 entities: {}
-            }, todoLoaded(
+            }, todosLoaded(
                 [{id : 1,
                 text: "Test",
                 completed: false,

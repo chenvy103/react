@@ -1,25 +1,39 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import TodoListItem from './TodoListItem'
-import { selectFilteredTodoIds } from './selectsSlice'
+import { selectTodoIds, getTodos } from './todosSlice'
 
 
 function TodoList(){
-    const todoIds = useSelector(selectFilteredTodoIds)
-    const loadingStatus = useSelector((state) => state.todos.status)
+  const todoIds = useSelector(selectTodoIds)
+  const status = useSelector(state => state.todos.status)
+  const {status: stateStatus, colors} = useSelector(state => state.filters)
+
+  const dispatch = useDispatch()
+
+  const renderedListItems = todoIds.map((todoId) => {
+    return <TodoListItem key={todoId} id={todoId} />
+  })
   
-    if (loadingStatus === 'loading') {
-      return (
-        <div className="todo-list">
-          <div className="loader" />
-        </div>
-      )
+  React.useEffect(() => {
+    if (todoIds.length === 0) {
+        dispatch(getTodos({status: stateStatus, colors}))
     }
-    const renderedListItems = todoIds.map((todoId) => {
-      return <TodoListItem key={todoId} id={todoId} />
-    })
-  
-    return <ul className="todo-list">{renderedListItems}</ul>
+  }, [todoIds.length])
+
+  return (
+    <div>
+      {status === 'loading' ? (
+        <div className='todo-list'>
+            <div className='loader'></div>
+        </div>
+      ) : (
+        <ul className='todo-list'>
+            {renderedListItems}
+        </ul>
+      )}
+    </div>
+  )
 }
 
 export default TodoList

@@ -1,31 +1,35 @@
-import { availableColors, capitalize } from '../filters/colors'
-import {colorFilterChanged} from '../filters/filtersReducer'
-import { useDispatch } from 'react-redux'
+import { selectAllColors } from '../colors/colorsSlice'
+import {filteredColors} from '../filters/filtersSlice'
+import { useSelector, useDispatch } from 'react-redux'
 
 function ColorFilters ({ value: colors, onChange }){
+  const colorsObj = useSelector(selectAllColors)
+  //const convertedColors = colorsObj.map(color => color.name)
   const dispatch = useDispatch()
-  const renderedColors = availableColors.map((color) => {
-    const checked = colors.includes(color)
+
+  const renderedColors = colorsObj.map((color) => {
+    const checked = colors.includes(color.name)
     const handleChange = () => {
       const changeType = checked ? 'uncheck' : 'checked'
-      dispatch(colorFilterChanged(color,changeType))
+      dispatch(filteredColors(color.name,changeType))
+      console.log(colors)
     }
 
     return (
-      <label key={color}>
+      <label key={color.name}>
         <input
           type="checkbox"
-          name={color}
+          name={color.name}
           checked={checked}
           onChange={handleChange}
         />
         <span
           className="color-block"
           style={{
-            backgroundColor: color,
+            backgroundColor: color.name,
           }}
         ></span>
-        {capitalize(color)}
+        {color.name}
       </label>
     )
   })

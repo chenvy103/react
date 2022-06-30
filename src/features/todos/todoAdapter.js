@@ -2,7 +2,7 @@ export function convertTo(data){
     return {
         "id" : data.id,
         "text": data.text,
-        "color" : data.color?.name,
+        "color" : data.color?.id,
         "completed": data.completed
     }
 }

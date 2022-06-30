@@ -1,5 +1,5 @@
 import { createSelector } from "reselect"
-import { StatusFilters } from "../filters/filtersReducer"
+import { StatusFilters } from "../filters/filtersSlice"
 
 const selectTodoEntities = (state) => state.todos.entities
 
@@ -23,7 +23,7 @@ export const selectFilteredTodos = createSelector(
     // Output 
     (todos, filters) => {
         const { status, colors } = filters
-        //console.log(colors)
+        //console.log('selectColors',colors)
         
         const completedStatus = status === StatusFilters.Completed
         return todos.filter((todo) => {

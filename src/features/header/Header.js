@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { saveNewTodo } from '../todos/todosReducer'
+import { useSelector , useDispatch } from 'react-redux'
+import { addTodo } from '../todos/todosSlice'
+import { selectAllColors } from '../colors/colorsSlice'
 
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -31,22 +32,20 @@ function Header(){
             color: data.color
         }
         setStatus('loading')
-        dispatch(saveNewTodo(aNewTodo))
+        dispatch(addTodo(aNewTodo))
         reset();
         setStatus('idle')
         setFocus("text")
     }
 
-    
-    const options = [
-        {value: '', text: ''},
-        {value: 'Green', text: 'Green'},
-        {value: 'Blue', text: 'Blue'},
-        {value: 'Orange', text: 'Orange'},
-        {value: 'Purple', text: 'Purple'},
-        {value: 'Red', text: 'Red'},
-    ];
-    
+    const colorsList = useSelector(selectAllColors)
+    const convertedColors = colorsList.map(color => color.name)
+    const colorOptions = convertedColors.map((c) => (
+        <option key={c} value={c}>
+        {c}
+        </option>
+    ))
+
 
     let isLoading = status === 'loading'
     let placeholder = isLoading ? '' : 'What needs to be done?'
@@ -72,11 +71,9 @@ function Header(){
                         className="colorPicker"
                         style={{marginTop:20}}
                     >
-                        {options.map(option => (
-                            <option key={option.value} value={option.value}>
-                                {option.text}
-                            </option>
-                        ))}
+                        <option value=""></option>
+                        {colorOptions}
+                        
                     </select>
                     <p className='error'>{errors.color?.message}</p>
                 </div>

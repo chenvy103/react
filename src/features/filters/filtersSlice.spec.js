@@ -13,7 +13,7 @@ describe("Test filter reducer", ()=>{
             colors: []
         })
     });
-    it("Test filterByColors", ()=>{
+    it("Test filterByColors1", ()=>{
         expect(
             reducer({
                 status: "all",
@@ -24,22 +24,22 @@ describe("Test filter reducer", ()=>{
             colors: ['red','blue']
         })
     });
-    it("Test filteredColors", ()=>{
+    it("Test filteredColors2", ()=>{
         expect(
             reducer({
                 colors: ['red','blue']
             }, filteredColors('red','uncheck' ))
         ).toEqual(
-            ['blue']
+            {colors: ['blue']}
         )
     });
-    it("Test filteredColors", ()=>{
+    it("Test filteredColors3", ()=>{
         expect(
             reducer({
                 colors: ['red','blue']
             }, filteredColors('green','checked' ))
         ).toEqual(
-            ['red','blue','green']
+            {colors: ['red','blue','green']}
         )
     });
 });

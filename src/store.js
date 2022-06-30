@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
-import todosReducer from './features/todos/todosReducer'
-import filtersReducer from './features/filters/filtersReducer'
+import todosSlice from './features/todos/todosSlice'
+import filtersSlice from './features/filters/filtersSlice'
+import colorsSlice from './features/colors/colorsSlice'
 
 /*
 const composedEnhancer = composeWithDevTools(
@@ -12,8 +13,9 @@ const store = createStore(rootReducer, composedEnhancer)
 
 const store = configureStore({
   reducer: {
-    todos: todosReducer,
-    filters: filtersReducer
+    todos: todosSlice,
+    filters: filtersSlice,
+    colors: colorsSlice
   }
 })
 

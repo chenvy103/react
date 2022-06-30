@@ -1,17 +1,10 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { availableColors} from '../filters/colors'
+import { selectAllColors } from '../colors/colorsSlice'
 
-import {todoColorSelected, todoToggled, editTodo, deleteTodo} from './todosReducer'
 import {selectTodoById} from './selectsSlice'
-import { setTodoToggle } from './todosSlice'
+import { setTodoToggle, setTodoColor, deleteTodo, updateTodo } from './todosSlice'
 
-
-export const colorOptions = availableColors.map((c) => (
-    <option key={c} value={c}>
-    {c}
-    </option>
-))
 
 function TodoListItem ({ id }) {
   // `selectTodoById` with state & ID value
@@ -20,18 +13,27 @@ function TodoListItem ({ id }) {
     const dispatch = useDispatch()
 
     
+    const colorsObj = useSelector(selectAllColors)
+    const colorOptions = colorsObj.map((color) => (
+        <option key={color.id} value={color.id}>
+        {color.name}
+        </option>
+    ))
+    
     const handleToggleChanged = ()=>{
-        dispatch(editTodo({...todo, completed: !todo.completed}))
         dispatch(setTodoToggle(todo.id))
+        dispatch(updateTodo({...todo, completed: !todo.completed}))
     }
 
     const handleColorChanged = (e) => {
         const color = e.target.value
-        dispatch(todoColorSelected(todo.id, color))
-        dispatch(editTodo({...todo, color:color}))
+        console.log(typeof color)
+        const findedColor = colorsObj.find(item => item.id === parseInt(color))
+        console.log(findedColor)
+        dispatch(setTodoColor(todo.id, color))
+        dispatch(updateTodo({...todo, color:findedColor.name}))
     }
 
-    
 
     return (
         <li>
