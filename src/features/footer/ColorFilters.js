@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 
 function ColorFilters ({ value: colors, onChange }){
   const colorsObj = useSelector(selectAllColors)
+
   //const convertedColors = colorsObj.map(color => color.name)
   const dispatch = useDispatch()
 
@@ -12,7 +13,6 @@ function ColorFilters ({ value: colors, onChange }){
     const handleChange = () => {
       const changeType = checked ? 'uncheck' : 'checked'
       dispatch(filteredColors(color.name,changeType))
-      console.log(colors)
     }
 
     return (

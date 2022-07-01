@@ -4,7 +4,8 @@ import { convertBack, convertTo } from "./todoAdapter"
 const todosAdapter = createEntityAdapter()
 const initialState = todosAdapter.getInitialState({
     status: 'idle',
-    entities: {}
+    entities: {},
+    error: ''
 })
 
 
@@ -20,10 +21,12 @@ export const getTodos = createAsyncThunk(
             if(res.ok){
                 return res.json()
             }else{
-                console.log('error',await res.json())
+                const err = await res.json()
+                alert(err.message)
+                return err
             }
         }catch(error){
-            console.log(error.response)
+            console.log('catch',error)
             return rejectWithValue(error.response)
         }
         
@@ -52,6 +55,7 @@ export const addTodo = createAsyncThunk(
         }
     }
 )
+
 export const updateTodo = createAsyncThunk(
     'todos/updateTodo',
     async(todo, {rejectWithValue}) => {
@@ -84,7 +88,11 @@ export const deleteTodo = createAsyncThunk(
         const res = await fetch(`http://127.0.0.1/api/todos/`+ `${id}`,{
             method: 'DELETE'
         })
-        return res.json()
+        if(res.ok){
+            return res.json()
+        }else{
+            console.log('error',await res.json())
+        }
     }
 )
 
@@ -92,14 +100,22 @@ export const markAllCompleted = createAsyncThunk(
     'todos/markAllCompleted',
     async(ids=[]) =>{
         const res = await fetch('http://127.0.0.1/api/todos/mark-completed?'+`ids=[${ids.toString()}]`)
-        return res.json()
+        if(res.ok){
+            return res.json()
+        }else{
+            console.log('error',await res.json())
+        }
     }
 )
 export const clearAllCompleted = createAsyncThunk(
     'todos/clearAllCompleted',
     async(ids=[]) =>{
         const res = await fetch('http://127.0.0.1/api/todos/clear-completed?'+`ids=[${ids.toString()}]`)
-        return res.json()
+        if(res.ok){
+            return res.json()
+        }else{
+            console.log('error',await res.json())
+        }
     }
 )
 
@@ -179,12 +195,20 @@ const todosSlice = createSlice({
                 state.status = 'loading'
             })
             .addCase(getTodos.fulfilled, (state, action) =>{
-                const data = action.payload.data
-                const convertedTodo = data === null ? null : 
-                data.map((todo)=>convertTo(todo))
-                todosAdapter.setAll(state, convertedTodo)
-                console.log(action.payload.data)
-                state.status = 'idle'
+                if(action.payload.message){
+                    state.error = action.payload.message
+                    console.log('notOK', state.error)
+                    state.status = 'error'
+                }
+                else{
+                    console.log('OK')
+                    const data = action.payload.data
+                    const convertedTodo = data === null ? null : 
+                    data.map((todo)=>convertTo(todo))
+                    todosAdapter.setAll(state, convertedTodo)
+                    state.status = 'idle'
+                }
+                
             })
             .addCase(getTodos.rejected, (state, action) =>{
                 todosAdapter.removeAll(state)

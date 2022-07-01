@@ -19,10 +19,12 @@ function TodoListItem ({ id }) {
         {color.name}
         </option>
     ))
+
     
     const handleToggleChanged = ()=>{
+        const findedColor = colorsObj.find(item => item.id === parseInt(color))
         dispatch(setTodoToggle(todo.id))
-        dispatch(updateTodo({...todo, completed: !todo.completed}))
+        dispatch(updateTodo({...todo, color:findedColor.name, completed: !todo.completed}))
     }
 
     const handleColorChanged = (e) => {

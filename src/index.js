@@ -5,11 +5,22 @@ import './index.css'
 import App from './App'
 import store from './store'
 
-import { getTodos } from './features/todos/todosSlice'
 import { getColors } from './features/colors/colorsSlice'
 
-store.dispatch(getTodos())
-store.dispatch(getColors())
+const mounted = async() => {
+  try {
+    await store.dispatch(getColors());
+    //await store.dispatch(getTodos());
+  } catch ( e ) {
+    console.error(e);
+  }
+}
+
+mounted();
+
+//store.dispatch(getColors())
+//store.dispatch(getTodos())
+
 
 ReactDOM.render(
   <React.StrictMode>
