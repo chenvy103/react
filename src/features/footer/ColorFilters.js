@@ -1,19 +1,21 @@
 import { selectAllColors } from '../colors/colorsSlice'
-import {filteredColors} from '../filters/filtersSlice'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 function ColorFilters ({ value: colors, onChange }){
   const colorsObj = useSelector(selectAllColors)
 
   //const convertedColors = colorsObj.map(color => color.name)
-  const dispatch = useDispatch()
+  //const dispatch = useDispatch()
 
   const renderedColors = colorsObj.map((color) => {
     const checked = colors.includes(color.name)
     const handleChange = () => {
       const changeType = checked ? 'uncheck' : 'checked'
-      dispatch(filteredColors(color.name,changeType))
+      //dispatch(filteredColors(color.name,changeType))
+      onChange(color.name,changeType)
     }
+
+
 
     return (
       <label key={color.name}>

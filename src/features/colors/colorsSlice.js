@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit'
+import axios from 'axios'
 
 const colorsAdapter = createEntityAdapter()
 const initialState = colorsAdapter.getInitialState({
@@ -10,8 +11,13 @@ const initialState = colorsAdapter.getInitialState({
 export const getColors = createAsyncThunk(
     'colors/getColors',
     async()=>{
-        const res = await fetch(`http://127.0.0.1/api/colors`)
-        return res.json()
+        try{
+            const res = await axios.get(`http://127.0.0.1/api/colors`)
+            console.log(res);
+            return res.data
+        }catch (err){
+            console.error(err);
+        }
     }
 )
 

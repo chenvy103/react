@@ -4,9 +4,11 @@ import RemainingTodos from './RemainingTodos'
 import StatusFilter from './StatusFilter'
 import ColorFilters from './ColorFilters'
 
+
 import {getTodos, markCompleted, markAllCompleted, clearCompleted, clearAllCompleted} from '../todos/todosSlice'
 import {selectTodos} from '../todos/selectsSlice'
-import {filterByStatus, filterByColors} from '../filters/filtersSlice'
+import {filterByStatus, filteredColors} from '../filters/filtersSlice'
+
 
 function Footer() {
     const dispatch = useDispatch()
@@ -27,18 +29,22 @@ function Footer() {
         return selectTodos(todos).filter((todo)=> todo.completed).map(todo => todo.id)
     })
 
-    const onColorChange = (colors) =>{
-        //dispatch(getTodos({status, colors}))
-        dispatch(filterByColors(colors))
+    const onColorChange = (color,changeType) =>{
+        dispatch(filteredColors(color,changeType))
+        const newColors = changeType === 
+        'checked' ? colors.concat(color) :
+        colors.filter(existingColor => existingColor !== color)
+        console.log('checkColors',newColors)
+        dispatch(getTodos({status, colors: newColors}))
     }
 
         // Use selecter to ids get uncompleted todos 
         // Dispath to thunk API
 
     const onStatusChange = (status) =>{
-        //dispatch(getTodos({status, colors}))
-        dispatch(filterByStatus(status))
         //dispatch(statusFilterChanged(status))
+        dispatch(filterByStatus(status))
+        dispatch(getTodos({status, colors}))
     }
     const handleCompletedTodos =()=>{
         dispatch(markCompleted(uncompletedIds))
@@ -51,9 +57,11 @@ function Footer() {
         dispatch(clearAllCompleted(clearCompletedIds))
     }
 
+/*
     React.useEffect(() => {
         dispatch(getTodos({status, colors}))
     }, [status, colors])
+*/
     
     return (
         <footer className="footer">

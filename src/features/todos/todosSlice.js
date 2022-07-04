@@ -212,6 +212,7 @@ const todosSlice = createSlice({
             })
             .addCase(getTodos.rejected, (state, action) =>{
                 todosAdapter.removeAll(state)
+                console.log(action.error.message)
                 state.status = 'failed'
             })
             .addCase(addTodo.fulfilled, (state, action) =>{
