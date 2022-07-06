@@ -1,36 +1,36 @@
 import {useState} from 'react'
-import {Routes, Route, Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import CreateColor from '../../page/CreateColor'
-import {getColors} from '../colors/colorsSlice'
 import {capitalize} from '../filters/colors'
+import Modal from '../../page/modal/Modal'
+import CreateModal from '../../page/modal/CreateModal'
 
 
-function HeaderColors ({value: colorsObj}){
+function HeaderColors ({onChange}){
     const [text, setText] = useState('')
-    const dispatch = useDispatch()
 
     const handleSubmit = () => {
+        /*
         const findedColor = colorsObj.find(item => item.name === capitalize(text))
         console.log(findedColor.id)
         dispatch(getColors(findedColor.id))
+        */
+        onChange(capitalize(text))
         setText('')
     }
+
+    const dataName = 'create'
+    const dataButton = '+'
+    const dataContent = <CreateModal/>
+
+    const modalData = {dataName, dataButton, dataContent}
+
 
 
     return(
         <header>
-            <Link to='/colors/create'>
-            <button 
-                className="button"
-                style={{margin:15}}
-            >
-                +
-            </button>
-            </Link>
+            <Modal value={modalData}/>
             
             <form>
-                <div style={{float:'left', margin: 20}}>
+                <div style={{float:'left', padding:18}}>
                     <input
                         placeholder='What color are you looking for?'
                         type="text" 
@@ -52,9 +52,7 @@ function HeaderColors ({value: colorsObj}){
                 </button>
             </form> 
             
-        <Routes>
-            <Route path='/colors/create' element={<CreateColor/>}/>
-        </Routes>
+        
         </header>
     )
 }

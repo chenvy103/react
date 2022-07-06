@@ -3,10 +3,6 @@ import ColorList from '../features/colors/ColorList'
 import {selectAllColors} from '../features/colors/colorsSlice'
 import { useSelector } from 'react-redux'
 import React, {useState} from 'react'
-import {capitalize} from '../features/filters/colors'
-import {Routes, Route, Link } from 'react-router-dom'
-import CreateColor from '../page/CreateColor'
-
 
 
 function Colors(){
@@ -14,19 +10,19 @@ function Colors(){
 
   const [list, setList] = useState(colorsObj)
 
-  const [text, setText] = useState('')
+  //const [text, setText] = useState('')
 
-    const handleSubmit = () => {
+    const handleSubmit = (text) => {
         const colors = []
-        console.log('text',capitalize(text))
+        console.log('text',text)
         colorsObj.forEach((color)=>{
-          if(color.name == capitalize(text)) {
+          if(color.name === text) {
             return colors.push(color)
           }
         })
         setList(colors)
         console.log('searched',colors)
-        setText('')
+        //setText('')
     }
   
     React.useEffect(()=>{
@@ -40,43 +36,7 @@ function Colors(){
               <h2>Colors</h2>
               <div className="todoapp">
 
-              <header>
-            <Link to='/colors/create'>
-            <button 
-                className="button"
-                style={{margin:15}}
-            >
-                +
-            </button>
-            </Link>
-            
-            <form>
-                <div style={{float:'left', padding:18}}>
-                    <input
-                        placeholder='What color are you looking for?'
-                        type="text" 
-                        value={text}
-                        autoFocus={true}
-                        onChange={(e) => {setText(e.target.value)}}
-                        style={{width:'100%', padding:10}}
-                        required
-                    />
-                </div>    
-                
-                <button 
-                    className="button"
-                    type="submit"
-                    style={{margin:15}}
-                    onClick={handleSubmit}
-                >
-                    Search
-                </button>
-            </form> 
-            
-        <Routes>
-            <Route path='/colors/create' element={<CreateColor/>}/>
-        </Routes>
-        </header>
+                <Header onChange={handleSubmit}/>
 
                 <ColorList value={list}/>
               </div>

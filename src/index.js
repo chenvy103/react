@@ -2,10 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
-import {BrowserRouter} from 'react-router-dom'
+import {MemoryRouter} from 'react-router-dom'
 
 import './index.css'
 import './page/Colors.css'
+import './page/modal/Modal.css'
+
 import App from './App'
 import store from './store'
 /*
@@ -34,9 +36,9 @@ mounted();
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
+      <MemoryRouter>
         <App />
-      </BrowserRouter>
+      </MemoryRouter>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

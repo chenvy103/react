@@ -1,11 +1,17 @@
 import {Routes, Route, Link } from 'react-router-dom'
-import {useDispatch} from 'react-redux'
 import EditColor from '../../page/EditColor'
 import { lowerCase } from '../filters/colors'
-import {deleteColor} from './colorsSlice'
+import Modal from '../../page/modal/Modal'
+import DeleteModal from '../../page/modal/DeleteModal'
 
 function ColorItem({id, name}){
-    const dispatch = useDispatch()
+    
+    const dataName = 'delete'
+    const dataButton = 'X'
+    const dataContent = <DeleteModal value={id}/>
+
+    const modalData = {dataName, dataButton, dataContent}
+
     return (
         
         <tr >
@@ -23,9 +29,8 @@ function ColorItem({id, name}){
                 </Link>
             </td>
             <td>
-                <button className="destroy" onClick={()=>{dispatch(deleteColor(id))}}>
-                    &times;
-                </button>
+                
+                <Modal value={modalData}/>
             </td>
             <Routes>
                 <Route path={`/colors/${id}`} element={<EditColor/>}/>

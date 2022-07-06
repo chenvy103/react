@@ -17,8 +17,7 @@ export const getColors = createAsyncThunk(
             const idParam = colorId ? `/${colorId}` : ''
             const url = link + idParam
             const res = await fetch(url)
-            console.log(res);
-            console.log(colorId)
+            //console.log(res,colorId)
             if(res.ok){
                 return res.json()
             }else{
