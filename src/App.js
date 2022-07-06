@@ -1,8 +1,9 @@
 import React from 'react'
-
-import Header from './features/header/Header'
-import TodoList from './features/todos/TodoList'
-import Footer from './features/footer/Footer'
+import {Routes, Route, NavLink} from 'react-router-dom'
+import Main from './page/Todos'
+import Colors from './page/Colors'
+import CreateColor from './page/CreateColor'
+import EditColor from './page/EditColor'
 
 import store from './store'
 
@@ -10,6 +11,7 @@ import { getTodos } from './features/todos/todosSlice'
 import { getColors } from './features/colors/colorsSlice'
 
 function App() {
+  
   React.useEffect(()=>{
     const fetchData = async ()=>{
       try{
@@ -21,24 +23,29 @@ function App() {
     };
     fetchData();
   },[])
-
+  
   return (
     <div className="App">
-      <nav>
+      <div className='nav'>
         <section>
           <h1>Redux Fundamentals Example</h1>
         </section>
-      </nav>
-      <main>
-        <section className="medium-container">
-          <h2>Todos</h2>
-          <div className="todoapp">
-            <Header />
-            <TodoList />
-            <Footer />
+      </div>
+
+      <nav>
+        <div className="navContent">
+          <div className="navLinks">
+            <NavLink className='nav-link' to='/'>Todos</NavLink>
+            <NavLink className='nav-link' to='/colors'>Colors</NavLink>
           </div>
-        </section>
-      </main>
+        </div>
+      </nav>
+      <Routes>
+        <Route path='/' element={<Main/>}/>
+        <Route path='/colors' element={<Colors/>}/>
+        <Route path='/colors/create' element={<CreateColor/>}/>
+        <Route path='/colors/:colorId' element={<EditColor/>}/>
+      </Routes>
     </div>
   )
 }

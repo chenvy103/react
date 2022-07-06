@@ -5,17 +5,13 @@ import { selectAllColors } from '../colors/colorsSlice'
 
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
-const schema = yup.object().shape({
-    text: yup.string().required(),
-    color: yup.string().required()
-});
+import {schema} from './validate'
 
 function Header(){
     const [status, setStatus] = useState('idle')
     const dispatch = useDispatch()
 
+    
 
     const { register, handleSubmit, formState: { errors }, reset, setFocus } = useForm({
         resolver: yupResolver(schema),
@@ -31,6 +27,7 @@ function Header(){
             text: data.text.trim(),
             color: data.color
         }
+       
         setStatus('loading')
         dispatch(addTodo(aNewTodo))
         reset();
