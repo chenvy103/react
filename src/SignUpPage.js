@@ -1,9 +1,22 @@
 import {Box, Typography, Grid} from '@mui/material';
 import FormSignUp from './form/FormSignUp';
-import Datetime from './Datetime';
+//import Datetime from './Datetime';
 import Pic from "./illustration-signup.jpeg"
+import React from 'react';
+
+import {getInvitation} from './features/fetchAPI'
   
 function SignUpPage(){
+  const [time,setTime] = React.useState('')
+  
+  React.useEffect(()=>{
+    (async () => {
+      const data = await getInvitation()
+      const timer = data['expiresAt']
+      setTime(timer)
+   })()
+  },[])
+
 
   return (
     <Grid container >
@@ -20,7 +33,7 @@ function SignUpPage(){
             Please enter your email and password to register!
           </Typography>
           <Typography variant='p' component='p' sx={{ mb: '2vh' }}>
-            This invitation link express on <b> <Datetime/> </b>
+            This invitation link express on <b> {time} </b>
           </Typography>
           <FormSignUp/>
         </Box>

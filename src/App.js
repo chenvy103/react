@@ -1,9 +1,11 @@
 import SignUpPage from "./SignUpPage"
 
+
 function App() {
+
   return (
     <div>
-      <SignUpPage />
+      <SignUpPage/>
     </div>
   );
 }
