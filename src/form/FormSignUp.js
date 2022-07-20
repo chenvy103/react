@@ -1,18 +1,16 @@
 import {Box, FormGroup, FormHelperText, Typography, Link} from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import { useForm } from 'react-hook-form'
-import React from 'react'
+import React, { useState } from 'react'
 import { yupResolver  } from '@hookform/resolvers/yup'
 import {registerSchema} from '../validate/registerSchema'
 import InputText from '../form-components/InputText'
 import RequiredCheckbox from '../form-components/RequiredCheckbox'
-import {register as registerAsync} from '../features/fetchAPI'
+import {register as registerAsync} from '../features/RegisterService'
 
-import {convertToUseFormErrors, showError} from '../validate/validateUtils'
+import {showError} from '../validate/validateUtils'
 
 function FormSignUp(){
-  const [err, setErr] = React.useState({})
-
   const {
     register,
     handleSubmit,
@@ -33,9 +31,10 @@ function FormSignUp(){
   const onSubmitHandler = async(values) => {
     const data = await registerAsync(values)
     console.log(data)
-    if(data.succcess){
-      // s
-    } else{
+    if(data.success == true){
+      console.log(data.data)
+      reset()
+    } else {
       console.log(data);
       showError(data.error, setError, {passwordConfirmation : 'pwconfirm'});
     }
@@ -53,8 +52,6 @@ function FormSignUp(){
 
   }, [err])
   */
-
-
 
 
   return(

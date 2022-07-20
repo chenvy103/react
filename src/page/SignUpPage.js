@@ -1,10 +1,10 @@
 import {Box, Typography, Grid} from '@mui/material';
-import FormSignUp from './form/FormSignUp';
+import FormSignUp from '../form/FormSignUp';
 //import Datetime from './Datetime';
-import Pic from "./illustration-signup.jpeg"
+import Pic from "../illustration-signup.jpeg"
 import React from 'react';
 
-import {getInvitation} from './features/fetchAPI'
+import {getInvitation} from '../features/RegisterService'
   
 function SignUpPage(){
   const [time,setTime] = React.useState('')

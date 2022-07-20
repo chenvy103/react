@@ -1,8 +1,8 @@
-import {token} from './fetchAPI'
+import {InvitationToken} from './RegisterService'
 
 export function convertTo(data){
     return{
-        "invitationToken" : token,
+        "invitationToken" : InvitationToken,
         "name" : data.name,
         "email" : data.email,
         "password" : data.password,
