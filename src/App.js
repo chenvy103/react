@@ -1,7 +1,6 @@
 import {Routes, Route} from 'react-router-dom'
 
 import SignUpPage from "./page/SignUpPage"
-import LoginSuccessPage from './page/LoginSuccessPage'
 import UserManagementPage from './page/UserManagementPage'
 import LoginPage from "./page/LoginPage";
 import Homepage from './page/Homepage';
@@ -18,12 +17,21 @@ function App() {
         <Route index element={<LoginPage />} />
         <Route path='/Register' element={<SignUpPage/>}/>
         <Route path='/Login' element={<LoginPage/>}/>
-        <Route path='/Loading' element={<LoginSuccessPage/>}/>
-        <Route path='/Homepage' element={<Homepage/>}/>
+        <Route path='/Home' element={
+          <ProtectedRoute
+            redirectPath='/Login'
+            isAllowed={!!user.id}
+          >
+            <Homepage/>
+          </ProtectedRoute>
+        }/>
         <Route 
-          path='/Home' 
+          path='/Manager' 
           element={
-            <ProtectedRoute user={user.isAdmin} redirectPath='/Homepage'>
+            <ProtectedRoute
+              redirectPath='/Home'
+              isAllowed={!!user.id && user.isAdmin}
+            >
               <UserManagementPage />
             </ProtectedRoute>
           }

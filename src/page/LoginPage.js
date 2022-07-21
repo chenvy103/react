@@ -7,10 +7,14 @@ import InputText from '../form-components/InputText'
 import LoadingButtonSubmit from '../form-components/LoadingButtonSubmit'
 import {showError} from '../validate/validateUtils'
 import {useNavigate} from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'
+import { getUser } from '../redux/userSlice';
 
 import {login} from '../features/LoginService'
 
 function LoginPage(){
+    const dispatch = useDispatch()
+    const user = useSelector(state => state.user.userInfo)
     const navigate = useNavigate();
     const [mess, setMess] = React.useState(null)
 
@@ -32,14 +36,16 @@ function LoginPage(){
             console.log(data.data)
             setMess(null)
             reset()
-            navigate('/Loading')
+            dispatch(getUser())
 
         } else {
             console.log(data);
             data.error ? showError(data.error, setError) : setMess(data.message)
         }
     }
-    
+    React.useEffect(()=>{
+        if(!!user.id) navigate('/Home')
+    },[user])
 
     return(
         <>
