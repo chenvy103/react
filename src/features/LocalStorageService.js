@@ -1,9 +1,8 @@
-import React from 'react'
 
-
-
-export function saveToken(token = {}){
-    localStorage.setItem('', JSON.stringify(token));
+export function getLocalStorageItem(key){
+    return JSON.parse(localStorage.getItem(key))
 }
 
-
+export function setLocalStorageItem(key, value){
+    localStorage.setItem(key, JSON.stringify(value));
+}

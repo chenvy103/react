@@ -1,22 +1,24 @@
 import {Box, FormGroup, FormHelperText, Typography, Link} from '@mui/material'
-import { LoadingButton } from '@mui/lab'
 import { useForm } from 'react-hook-form'
-import React, { useState } from 'react'
+import React from 'react'
 import { yupResolver  } from '@hookform/resolvers/yup'
 import {registerSchema} from '../validate/registerSchema'
 import InputText from '../form-components/InputText'
 import RequiredCheckbox from '../form-components/RequiredCheckbox'
+import LoadingButtonSubmit from '../form-components/LoadingButtonSubmit'
 import {register as registerAsync} from '../features/RegisterService'
-
+import {useNavigate} from 'react-router-dom';
 import {showError} from '../validate/validateUtils'
 
 function FormSignUp(){
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     reset,
     setError,
-    formState: { errors, isSubmitSuccessful }
+    formState: { errors }
   } = useForm({
     resolver: yupResolver(registerSchema)
   });
@@ -31,9 +33,11 @@ function FormSignUp(){
   const onSubmitHandler = async(values) => {
     const data = await registerAsync(values)
     console.log(data)
+    
     if(data.success == true){
       console.log(data.data)
       reset()
+      navigate('/Loading')
     } else {
       console.log(data);
       showError(data.error, setError, {passwordConfirmation : 'pwconfirm'});
@@ -80,19 +84,12 @@ function FormSignUp(){
           </FormHelperText>
         </FormGroup>
 
-        <LoadingButton
-          variant='contained'
-          fullWidth
-          type='submit'
-          sx={{ py: '2vh', mt: '1.2vh' }}
-        >
-          Sign Up
-        </LoadingButton>
+        <LoadingButtonSubmit value='Sign Up' />
         
       </Box>
       <Typography variant='p' component='p' sx={{ mt: '3vh' , textAlign: 'center'}}>
         Already have an account? 
-        <Link href="#" underline="none" sx={{fontWeight: 'bold'}}> Sign In </Link>
+        <Link href="/Login" underline="none" sx={{fontWeight: 'bold'}}> Sign In </Link>
       </Typography>
     </>
   )

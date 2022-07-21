@@ -1,28 +1,12 @@
-import {convertTo} from '../features/Adapter'
 import { baseURL } from './fetchAPI';
-
 import { setLocalStorageItem } from './LocalStorageService'
 
-export const InvitationToken = '0fb89ee8e7cc02b4dad98dddbfc871df'
-
-export async function getInvitation(){
-    const res = await fetch(`${baseURL}/invitation/${InvitationToken}`);
-    
-    if(res.status == 200){
-        const data = await res.json();
-        return data.data
-    }else{
-        console.log("Error", res.json());
-    }
-
-}
-
-export async function register(userData){
+export async function login(account){
     try{
-        console.log('user', userData)
-        let res = await fetch(`${baseURL}/register`,{
+        console.log('account', account)
+        let res = await fetch(`${baseURL}/login`,{
             method: 'POST',
-            body: JSON.stringify(convertTo(userData)),
+            body: JSON.stringify(account),
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
@@ -42,4 +26,5 @@ export async function register(userData){
     } catch(error) {
         console.log('error', error)
     }
+
 }
