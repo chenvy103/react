@@ -6,13 +6,16 @@ import { setLocalStorageItem } from './LocalStorageService'
 export const InvitationToken = '0fb89ee8e7cc02b4dad98dddbfc871df'
 
 export async function getInvitation(){
-    const res = await fetch(`${baseURL}/invitation/${InvitationToken}`);
-    
-    if(res.status == 200){
-        const data = await res.json();
-        return data.data
-    }else{
-        console.log("Error", res.json());
+    try{
+        const res = await fetch(`${baseURL}/invitation/${InvitationToken}`);
+        if(res.ok){
+            const data = await res.json();
+            return data.data
+        }else{
+            console.log("Error", res);
+        }
+    } catch(error) {
+        console.log('error', error)
     }
 
 }

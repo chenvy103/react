@@ -12,8 +12,11 @@ function SignUpPage(){
   React.useEffect(()=>{
     (async () => {
       const data = await getInvitation()
-      const timer = data['expiresAt']
-      setTime(timer)
+      if(data){
+        console.log(data)
+        const timer = data['expiresAt']
+        setTime(timer)
+      }
    })()
   },[])
 

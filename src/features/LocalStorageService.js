@@ -6,3 +6,7 @@ export function getLocalStorageItem(key){
 export function setLocalStorageItem(key, value){
     localStorage.setItem(key, JSON.stringify(value));
 }
+
+export function removeLocalStorageItem(key){
+    localStorage.removeItem(key);
+}

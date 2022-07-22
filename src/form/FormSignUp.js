@@ -8,10 +8,14 @@ import RequiredCheckbox from '../form-components/RequiredCheckbox'
 import LoadingButtonSubmit from '../form-components/LoadingButtonSubmit'
 import {register as registerAsync} from '../features/RegisterService'
 import {useNavigate} from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'
+import { getUser } from '../redux/userSlice';
 import {showError} from '../validate/validateUtils'
 
 function FormSignUp(){
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const user = useSelector(state => state.user.userInfo)
 
   const {
     register,
@@ -37,12 +41,17 @@ function FormSignUp(){
     if(data.success == true){
       console.log(data.data)
       reset()
-      navigate('/Loading')
+      dispatch(getUser())
+      
     } else {
       console.log(data);
       showError(data.error, setError, {passwordConfirmation : 'pwconfirm'});
     }
   }
+
+  React.useEffect(()=>{
+    if(!!user.id) navigate('/home')
+  },[user])
 
 
   /*

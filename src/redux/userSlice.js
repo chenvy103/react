@@ -1,6 +1,5 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit'
-import { baseURL } from '../features/fetchAPI';
-import { getLocalStorageItem } from '../features/LocalStorageService';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import {getCurrentUser} from '../features/UserService'
 
 const initialState={
     userInfo: {}
@@ -10,35 +9,38 @@ export const getUser = createAsyncThunk(
     'user/getUser',
     async()=>{
         try{
-            const token = getLocalStorageItem('accessToken')
-            const res = await fetch(`${baseURL}/me`,{
-                method: 'get',
-                headers:{
-                    'Authorization' : `Bearer ${token}`
-                }
-            });
-            return await res.json();
-    
-        } catch(error) {
+            const data = await getCurrentUser()
+            return data
+        } catch(error){
             console.log('error', error)
-            return error
+                return error
         }
     }
 )
 
+
 const userSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {},
+    reducers: {
+        logoutUser(state){
+            state.userInfo = {}
+        },
+    },
     extraReducers: (builder) =>{
         builder
             .addCase(getUser.fulfilled, (state, action)=>{
-                const data = action.payload.data
-                console.log('user',data)
-                state.userInfo = data
+                if (action.payload!== null){
+                    const data = action.payload.data
+                    console.log('user',data)
+                    state.userInfo = data
+                } else console.log('not logged in')
             })
     }
 })
 
-export default userSlice.reducer
+const { actions, reducer } = userSlice
+export const { logoutUser } = actions
+
+export default reducer
 

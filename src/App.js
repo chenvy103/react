@@ -4,7 +4,8 @@ import SignUpPage from "./page/SignUpPage"
 import UserManagementPage from './page/UserManagementPage'
 import LoginPage from "./page/LoginPage";
 import Homepage from './page/Homepage';
-import { ProtectedRoute } from './RouteUtils/ProtectedRoute';
+import ErrorPage from './page/ErrorPage'
+import { UserRoute, AdminRoute } from './RouteUtils/ProtectedRoute';
 
 import React from 'react'
 import { useSelector } from 'react-redux'
@@ -15,28 +16,22 @@ function App() {
     <div>
       <Routes>  
         <Route index element={<LoginPage />} />
-        <Route path='/Register' element={<SignUpPage/>}/>
-        <Route path='/Login' element={<LoginPage/>}/>
-        <Route path='/Home' element={
-          <ProtectedRoute
-            redirectPath='/Login'
-            isAllowed={!!user.id}
-          >
-            <Homepage/>
-          </ProtectedRoute>
-        }/>
-        <Route 
-          path='/Manager' 
-          element={
-            <ProtectedRoute
-              redirectPath='/Home'
-              isAllowed={!!user.id && user.isAdmin}
-            >
-              <UserManagementPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path='*' element={<p>There's nothing here: 404!</p>} />
+        <Route path='*' element={<ErrorPage />} />
+        <Route path='/register' element={<SignUpPage/>}/>
+        <Route path='/login' element={<LoginPage/>}/>
+
+        <Route element = {
+          <UserRoute user={user}/>
+        }>
+          <Route path='/home' element={<Homepage/>}/>
+        </Route>
+        
+        <Route element ={
+          <AdminRoute user={user}/>
+        }>
+          <Route path='manager' element={<UserManagementPage/>}/>
+        </Route>
+
       </Routes>
       
     </div>

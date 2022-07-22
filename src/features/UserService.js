@@ -4,10 +4,12 @@ import { getLocalStorageItem } from './LocalStorageService';
 export async function getCurrentUser(){
     const token = getLocalStorageItem('accessToken')
     //console.log('getToken', token)
-    if(token !== null){
+    if(token){
         const data = await getUserData(token)
         console.log('userData', data)
         return data
+    } else {
+        return null
     }
 }
 

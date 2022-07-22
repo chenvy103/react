@@ -8,9 +8,12 @@ import { BrowserRouter } from "react-router-dom";
 
 import { Provider } from 'react-redux'
 import store from './store'
+import { getUser } from './redux/userSlice';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+store.dispatch(getUser())
 
 
 root.render(

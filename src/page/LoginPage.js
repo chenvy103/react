@@ -44,7 +44,7 @@ function LoginPage(){
         }
     }
     React.useEffect(()=>{
-        if(!!user.id) navigate('/Home')
+        if(!!user.id) navigate('/home')
     },[user])
 
     return(
