@@ -6,7 +6,7 @@ import { postReducer } from './modules/posts/postReducer'
 import { userReducer } from './modules/users/userReducer'
 import { friendWallReducer } from './modules/friendWall/friendWallReducer'
 import { friendsReducer } from './modules/friends/friendsReducer'
-import { wallReducer } from './modules/myWall/wallReducer'
+import { wallReducer } from './modules/wall/wallReducer'
 
 //store entities from the database
 export const entitiesReducer = combineReducers({

@@ -13,7 +13,7 @@ export const setFriendsOrderAction = (orderType) =>({
     payload : orderType // (asc || desc)
 })
 
-export const friendsAction = {
+export const friendsActions = {
     loadFriendsAction,
     setFriendsOrderAction
 }

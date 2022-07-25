@@ -7,13 +7,11 @@ export const orderFilterState = 'asc' || 'desc'
 export function userIdsReducer (state = [], action){
     switch(action.type){
         case FriendsActionTypes.LOAD_FRIENDS :{
-            const userIds = action.payload
+            //action.payload = {userIds: number[]}
+            const userIds = action.payload.userIds
 
             //userIds: [ userIds ] -> Friends's ids
-            return [
-                ...state,
-                ...userIds
-            ]
+            return [...userIds]
         }
 
         case FriendsActionTypes.SET_FRIENDS_ORDER :{

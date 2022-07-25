@@ -10,6 +10,6 @@ export const loadPostsAction = ({posts = [], userId}) => ({
     payload: {posts, userId} 
 })
 
-export const postsAction = {
+export const postActions = {
     loadPostsAction
 }

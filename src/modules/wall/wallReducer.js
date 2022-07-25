@@ -5,13 +5,11 @@ import { combineReducers } from 'redux';
 export function postIdsReducer (state = [], action){
     switch(action.type){
         case WallActionTypes.LOAD_POSTS :{
-            const postIds = action.payload
+            //action.payload = {postIds: number[]}
+            const postIds = action.payload.postIds
 
             //postIds: [ postIds ]
-            return [
-                ...state,
-                ...postIds
-            ]
+            return [...postIds]
         }
     }
     return state;

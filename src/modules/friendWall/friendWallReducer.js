@@ -9,10 +9,7 @@ export function postIdsByIdReducer (state = [], action){
             
             //postIdsById: { userId: [postIds] }
             return {
-                ...state,
-                [userId] : state[userId] ?
-                    [...state[userId], ...postIds] : [...postIds]
-
+                [userId] : [...postIds] 
             }
         }
     }
@@ -20,5 +17,5 @@ export function postIdsByIdReducer (state = [], action){
 }
 
 export const friendWallReducer = combineReducers({
-    postIds : postIdsReducer
+    postIds : postIdsByIdReducer
 })
