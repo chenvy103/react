@@ -14,13 +14,11 @@ export function userByIdReducer (state = {}, action){
         }
 
         case UserActionTypes.LOAD_USERS :{
-            /**
-             * action.payload = users: User[]
-             */
+            //action.payload = users: User[]
             const users = action.payload.users
 /**
  * Store a map of users by id
- * arr.reduce(callback(accumulator, currentValue,[//]) => (...), [initValue] )
+ * arr.reduce(callback(accumulator, currentValue,[//]) {...}, [initValue] )
  * passing array => final result = a single value 
  * Return the sum of all the elements in an array
  */

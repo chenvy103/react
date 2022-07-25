@@ -9,6 +9,7 @@ export function postIdsByIdReducer (state = [], action){
             
             //postIdsById: { userId: [postIds] }
             return {
+                //[userId] : state[userId] ? [...state[userId], ...postIds] : [...postIds]
                 [userId] : [...postIds] 
             }
         }

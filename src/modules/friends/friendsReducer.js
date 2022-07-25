@@ -11,6 +11,7 @@ export function userIdsReducer (state = [], action){
             const userIds = action.payload.userIds
 
             //userIds: [ userIds ] -> Friends's ids
+            //return [...state, ...userIds]
             return [...userIds]
         }
 

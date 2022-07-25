@@ -9,6 +9,7 @@ export function postIdsReducer (state = [], action){
             const postIds = action.payload.postIds
 
             //postIds: [ postIds ]
+            //return [...state, ...postIds]
             return [...postIds]
         }
     }

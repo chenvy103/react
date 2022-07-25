@@ -30,14 +30,15 @@ export function commentIdsByIdReducer (state = {}, action){
     switch(action.type) {
         case CommentActionTypes.LOAD_COMMENTS :{
             const { comments, postId } = action.payload
-            const loadedCommentIdsByPostIdMap  = Array.isArray(comments) ?
+            console.log('aa',comments)
+            const loadedCommentIdsByPostIdMap  =
                 comments.reduce(
                     (map, comment) => ({
                         ...map,
                         [comment.postId] : map[comment.postId] ? 
                             [...map[comment.postId], comment.id] : [comment.id]
                     }), {}
-                ) : {} 
+                )
             if (comments.length === 0){
                 loadedCommentIdsByPostIdMap = { [postId] : [] }
             }
