@@ -15,15 +15,15 @@ function App() {
   return (
     <div>
       <Routes>  
-        <Route index element={<LoginPage />} />
         <Route path='*' element={<ErrorPage />} />
-        <Route path='/register' element={<SignUpPage/>}/>
+        <Route path='/register/:invitationToken' element={<SignUpPage/>}/>
         <Route path='/login' element={<LoginPage/>}/>
 
         <Route element = {
           <UserRoute user={user}/>
         }>
           <Route path='/home' element={<Homepage/>}/>
+          <Route path='/' element={<Homepage />} />
         </Route>
         
         <Route element ={

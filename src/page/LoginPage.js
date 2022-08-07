@@ -1,73 +1,35 @@
-import {Box, Typography} from '@mui/material'
-import { useForm } from 'react-hook-form'
-import React from 'react'
-import { yupResolver  } from '@hookform/resolvers/yup'
-import {registerSchema} from '../validate/registerSchema'
-import InputText from '../form-components/InputText'
-import LoadingButtonSubmit from '../form-components/LoadingButtonSubmit'
-import {showError} from '../validate/validateUtils'
-import {useNavigate} from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux'
-import { getUser } from '../redux/userSlice';
-
-import {login} from '../features/LoginService'
+import FormLogIn from "../components/form/FormLogIn"
+import {Box, Typography, Link, Paper, CssBaseline, Container} from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function LoginPage(){
-    const dispatch = useDispatch()
-    const user = useSelector(state => state.user.userInfo)
-    const navigate = useNavigate();
-    const [mess, setMess] = React.useState(null)
-
-    const {
-        register,
-        handleSubmit,
-        reset,
-        setError,
-        formState: { errors }
-    } = useForm({
-        resolver: yupResolver(registerSchema)
-    });
-
-    const onSubmitHandler = async(values) => {
-        const data = await login(values)
-        console.log(data)
-        
-        if(data.success == true){
-            console.log(data.data)
-            setMess(null)
-            reset()
-            dispatch(getUser())
-
-        } else {
-            console.log(data);
-            data.error ? showError(data.error, setError) : setMess(data.message)
-        }
-    }
-    React.useEffect(()=>{
-        if(!!user.id) navigate('/home')
-    },[user])
+    const theme = createTheme();
 
     return(
-        <>
-            <Box
-                component='form'
-                noValidate
-                autoComplete='off'
-                sx={{ width: '400px', margin: 'auto', mt:'50px' }}
-                onSubmit={handleSubmit(onSubmitHandler)}
-            >
-                <Typography component={'span'} sx={{ mb: '2vh', color:'red' }}>
-                    {(Object.keys(errors).length !== 0) ? <p><b>Input error! </b> Please check your email address and password </p>: null}
-                    {(mess == null) ? null : <p>{mess}</p>}
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+        
+            <Container maxWidth="sm" sx={{ mb: 4 }}>
+            <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+            <Box>
+                <Typography variant='h4' component='h2' sx={{ m: '2vh 0' , color:'DodgerBlue' , fontWeight: 'bold'} }>
+                    Welcome to TNF Cloud
                 </Typography>
-
-                <InputText name={register('email')} label='Email' type='email' error={errors['email']} />
-                <InputText name={register('password')} label='Password' type='password' error={errors['password']} />
-
-                <LoadingButtonSubmit value='Login' />
+                <Typography variant='p' component='p' sx={{ mb: '4vh' }}>
+                    Enter your email and password to sign in
+                </Typography>
+                <FormLogIn/>
+                <Typography variant='p' component='p' sx={{ mt: '3vh' }}>
+                    If you have an ivitation code 
+                    <Link href="/register" underline="none" sx={{fontWeight: 'bold'}}> Register </Link>
+                    <br/>
+                    Contact t the Administrator to get an account.
+                </Typography>
+                
             </Box>
-        </>
-
+            </Paper>
+            </Container>
+        </ThemeProvider>
     )
 }
 

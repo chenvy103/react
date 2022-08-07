@@ -1,19 +1,15 @@
-import {convertTo} from '../features/Adapter'
+import {convertTo} from '../service/Adapter'
 import { baseURL } from './fetchAPI';
 
 import { setLocalStorageItem } from './LocalStorageService'
 
 export const InvitationToken = '0fb89ee8e7cc02b4dad98dddbfc871df'
 
-export async function getInvitation(){
+export async function getInvitation(invitationToken){
     try{
-        const res = await fetch(`${baseURL}/invitation/${InvitationToken}`);
-        if(res.ok){
-            const data = await res.json();
-            return data.data
-        }else{
-            console.log("Error", res);
-        }
+        const res = await fetch(`${baseURL}/invitation/${invitationToken}`);
+        return await res.json();
+        
     } catch(error) {
         console.log('error', error)
     }

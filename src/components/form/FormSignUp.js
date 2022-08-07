@@ -2,15 +2,15 @@ import {Box, FormGroup, FormHelperText, Typography, Link} from '@mui/material'
 import { useForm } from 'react-hook-form'
 import React from 'react'
 import { yupResolver  } from '@hookform/resolvers/yup'
-import {registerSchema} from '../validate/registerSchema'
-import InputText from '../form-components/InputText'
-import RequiredCheckbox from '../form-components/RequiredCheckbox'
-import LoadingButtonSubmit from '../form-components/LoadingButtonSubmit'
-import {register as registerAsync} from '../features/RegisterService'
+import {registerSchema} from '../../validate/registerSchema'
+import InputText from './form-components/InputText'
+import RequiredCheckbox from './form-components/RequiredCheckbox'
+import LoadingButtonSubmit from './form-components/LoadingButtonSubmit'
+import {register as registerAsync} from '../../service/RegisterService'
 import {useNavigate} from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
-import { getUser } from '../redux/userSlice';
-import {showError} from '../validate/validateUtils'
+import { getUser } from '../../redux/userSlice';
+import {showError} from '../../validate/validateUtils'
 
 function FormSignUp(){
   const navigate = useNavigate();
@@ -48,12 +48,12 @@ function FormSignUp(){
       showError(data.error, setError, {passwordConfirmation : 'pwconfirm'});
     }
   }
-
+/*
   React.useEffect(()=>{
     if(!!user.id) navigate('/home')
   },[user])
 
-
+*/
   /*
   React.useEffect(() => {
     if (Object.keys(err).length !== 0) {
@@ -98,7 +98,7 @@ function FormSignUp(){
       </Box>
       <Typography variant='p' component='p' sx={{ mt: '3vh' , textAlign: 'center'}}>
         Already have an account? 
-        <Link href="/Login" underline="none" sx={{fontWeight: 'bold'}}> Sign In </Link>
+        <Link href="/login" underline="none" sx={{fontWeight: 'bold'}}> Sign In </Link>
       </Typography>
     </>
   )

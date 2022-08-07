@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import {getCurrentUser} from '../features/UserService'
+import {getCurrentUser} from '../service/UserService'
 
 const initialState={
     userInfo: {}
